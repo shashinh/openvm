@@ -20,6 +20,8 @@ use openvm_circuit_primitives::{
     AlignedBytesBorrow,
 };
 use openvm_circuit_primitives_derive::AlignedBorrow;
+use openvm_derive::ConstraintExtAnnotation;
+use openvm_aux::ConstraintExtInfo;
 use openvm_instructions::{
     instruction::Instruction,
     program::DEFAULT_PC_STEP,
@@ -36,14 +38,19 @@ use super::{
 };
 
 #[repr(C)]
-#[derive(AlignedBorrow)]
+#[derive(AlignedBorrow, ConstraintExtAnnotation, Debug)]
 pub struct Rv32BaseAluAdapterCols<T> {
+    #[constraint_ext(input)]
     pub from_state: ExecutionState<T>,
+    #[constraint_ext(input)]
     pub rd_ptr: T,
+    #[constraint_ext(input)]
     pub rs1_ptr: T,
     /// Pointer if rs2 was a read, immediate value otherwise
+    #[constraint_ext(input)]
     pub rs2: T,
     /// 1 if rs2 was a read, 0 if an immediate
+    #[constraint_ext(input)]
     pub rs2_as: T,
     pub reads_aux: [MemoryReadAuxCols<T>; 2],
     pub writes_aux: MemoryWriteAuxCols<T, RV32_REGISTER_NUM_LIMBS>,
@@ -81,6 +88,9 @@ impl<AB: InteractionBuilder> VmAdapterAir<AB> for Rv32BaseAluAdapterAir {
         local: &[AB::Var],
         ctx: AdapterAirContext<AB::Expr, Self::Interface>,
     ) {
+        let info =Rv32BaseAluAdapterCols::constraint_ext_info();
+        println!("constraint ext info: {:?}", info);
+
         let local: &Rv32BaseAluAdapterCols<_> = local.borrow();
         let timestamp = local.from_state.timestamp;
         let mut timestamp_delta: usize = 0;

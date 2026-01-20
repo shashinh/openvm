@@ -30,6 +30,10 @@ num-bigint.workspace = true
 num-integer.workspace = true
 serde = { workspace = true, features = ["derive", "std"] }
 
+# for constraint extraction support:
+openvm-derive = { path = "/home/shashin/projects/zk-fuzz/zuzz/openvm_derive" }
+openvm-aux = { path = "/home/shashin/projects/zk-fuzz/zuzz/openvm_aux" }
+
 [dev-dependencies]
 openvm-stark-sdk = { workspace = true }
 openvm-circuit = { workspace = true, features = ["test-utils"] }

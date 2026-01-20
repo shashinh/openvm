@@ -14,7 +14,9 @@ use openvm_circuit_primitives::{
     AlignedBytesBorrow,
 };
 use openvm_circuit_primitives_derive::AlignedBorrow;
-use openvm_instructions::{instruction::Instruction, program::DEFAULT_PC_STEP, LocalOpcode};
+use openvm_derive::ConstraintExtAnnotation;
+use openvm_aux::ConstraintExtInfo;
+use openvm_instructions::{LocalOpcode, instruction::Instruction, program::DEFAULT_PC_STEP, riscv::{RV32_CELL_BITS, RV32_REGISTER_NUM_LIMBS}};
 use openvm_rv32im_transpiler::BaseAluOpcode;
 use openvm_stark_backend::{
     interaction::InteractionBuilder,
@@ -25,16 +27,24 @@ use openvm_stark_backend::{
 use strum::IntoEnumIterator;
 
 #[repr(C)]
-#[derive(AlignedBorrow, Debug)]
+#[derive(AlignedBorrow, Debug, ConstraintExtAnnotation)]
 pub struct BaseAluCoreCols<T, const NUM_LIMBS: usize, const LIMB_BITS: usize> {
+    #[constraint_ext(output)]
     pub a: [T; NUM_LIMBS],
+    #[constraint_ext(input)]
     pub b: [T; NUM_LIMBS],
+    #[constraint_ext(input)]
     pub c: [T; NUM_LIMBS],
 
+    #[constraint_ext(selector)]
     pub opcode_add_flag: T,
+    #[constraint_ext(selector)]
     pub opcode_sub_flag: T,
+    #[constraint_ext(selector)]
     pub opcode_xor_flag: T,
+    #[constraint_ext(selector)]
     pub opcode_or_flag: T,
+    #[constraint_ext(selector)]
     pub opcode_and_flag: T,
 }
 

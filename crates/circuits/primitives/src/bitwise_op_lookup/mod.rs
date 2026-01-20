@@ -98,9 +98,11 @@ impl<AB: InteractionBuilder + PairBuilder, const NUM_BITS: usize> Air<AB>
         let local = main.row_slice(0);
         let local: &BitwiseOperationLookupCols<AB::Var> = (*local).borrow();
 
+        println!("invoke receive range");
         self.bus
             .receive(prep_local.x, prep_local.y, AB::F::ZERO, AB::F::ZERO)
             .eval(builder, local.mult_range);
+        println!("invoke receive xor");
         self.bus
             .receive(prep_local.x, prep_local.y, prep_local.z_xor, AB::F::ONE)
             .eval(builder, local.mult_xor);
@@ -173,6 +175,16 @@ impl<const NUM_BITS: usize> BitwiseOperationLookupChip<NUM_BITS> {
             cols.mult_xor = F::from_canonical_u32(
                 self.count_xor[n].swap(0, std::sync::atomic::Ordering::SeqCst),
             );
+            
+            // // Print trace row organized by columns (similar to earlier format)
+            // print!("Bitwise lookup row {} ({} columns): ", n, row.len());
+            // for (col_idx, value) in row.iter().enumerate() {
+            //     if col_idx > 0 {
+            //         print!(" ");
+            //     }
+            //     print!("[{}]={}", col_idx, value);
+            // }
+            // println!();
         }
         RowMajorMatrix::new(rows, NUM_BITWISE_OP_LOOKUP_COLS)
     }
