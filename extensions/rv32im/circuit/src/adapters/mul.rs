@@ -1,5 +1,6 @@
 use std::borrow::{Borrow, BorrowMut};
 
+use openvm_aux::ConstraintExtInfo;
 use openvm_circuit::{
     arch::{
         get_record_from_slice, AdapterAirContext, AdapterTraceExecutor, AdapterTraceFiller,
@@ -16,6 +17,7 @@ use openvm_circuit::{
 };
 use openvm_circuit_primitives::AlignedBytesBorrow;
 use openvm_circuit_primitives_derive::AlignedBorrow;
+use openvm_derive::ConstraintExtAnnotation;
 use openvm_instructions::{
     instruction::Instruction, program::DEFAULT_PC_STEP, riscv::RV32_REGISTER_AS,
 };
@@ -29,13 +31,19 @@ use super::{tracing_write, RV32_REGISTER_NUM_LIMBS};
 use crate::adapters::tracing_read;
 
 #[repr(C)]
-#[derive(AlignedBorrow)]
+#[derive(AlignedBorrow, ConstraintExtAnnotation)]
 pub struct Rv32MultAdapterCols<T> {
+    #[constraint_ext(input)]
     pub from_state: ExecutionState<T>,
+    #[constraint_ext(input)]
     pub rd_ptr: T,
+    #[constraint_ext(input)]
     pub rs1_ptr: T,
+    #[constraint_ext(input)]
     pub rs2_ptr: T,
+    #[constraint_ext(input)]
     pub reads_aux: [MemoryReadAuxCols<T>; 2],
+    #[constraint_ext(input)]
     pub writes_aux: MemoryWriteAuxCols<T, RV32_REGISTER_NUM_LIMBS>,
 }
 

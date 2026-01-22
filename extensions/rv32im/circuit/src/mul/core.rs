@@ -3,6 +3,7 @@ use std::{
     borrow::{Borrow, BorrowMut},
 };
 
+use openvm_aux::ConstraintExtInfo;
 use openvm_circuit::{
     arch::*,
     system::memory::{online::TracingMemory, MemoryAuxColsFactory},
@@ -12,6 +13,7 @@ use openvm_circuit_primitives::{
     AlignedBytesBorrow,
 };
 use openvm_circuit_primitives_derive::AlignedBorrow;
+use openvm_derive::ConstraintExtAnnotation;
 use openvm_instructions::{instruction::Instruction, program::DEFAULT_PC_STEP, LocalOpcode};
 use openvm_rv32im_transpiler::MulOpcode;
 use openvm_stark_backend::{
@@ -22,11 +24,15 @@ use openvm_stark_backend::{
 };
 
 #[repr(C)]
-#[derive(AlignedBorrow)]
+#[derive(AlignedBorrow, ConstraintExtAnnotation)]
 pub struct MultiplicationCoreCols<T, const NUM_LIMBS: usize, const LIMB_BITS: usize> {
+    #[constraint_ext(output)]
     pub a: [T; NUM_LIMBS],
+    #[constraint_ext(input)]
     pub b: [T; NUM_LIMBS],
+    #[constraint_ext(input)]
     pub c: [T; NUM_LIMBS],
+    #[constraint_ext(output)]
     pub is_valid: T,
 }
 
