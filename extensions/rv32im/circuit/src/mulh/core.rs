@@ -13,6 +13,8 @@ use openvm_circuit_primitives::{
     AlignedBytesBorrow,
 };
 use openvm_circuit_primitives_derive::AlignedBorrow;
+use openvm_derive::ConstraintExtAnnotation;
+use openvm_aux::ConstraintExtInfo;
 use openvm_instructions::{instruction::Instruction, program::DEFAULT_PC_STEP, LocalOpcode};
 use openvm_rv32im_transpiler::MulHOpcode;
 use openvm_stark_backend::{
@@ -24,18 +26,27 @@ use openvm_stark_backend::{
 use strum::IntoEnumIterator;
 
 #[repr(C)]
-#[derive(AlignedBorrow)]
+#[derive(AlignedBorrow, ConstraintExtAnnotation)]
 pub struct MulHCoreCols<T, const NUM_LIMBS: usize, const LIMB_BITS: usize> {
+    #[constraint_ext(output)]
     pub a: [T; NUM_LIMBS],
+    #[constraint_ext(input)]
     pub b: [T; NUM_LIMBS],
+    #[constraint_ext(input)]
     pub c: [T; NUM_LIMBS],
 
+    #[constraint_ext(output)]
     pub a_mul: [T; NUM_LIMBS],
+    #[constraint_ext(output)]
     pub b_ext: T,
+    #[constraint_ext(output)]
     pub c_ext: T,
 
+    #[constraint_ext(selector)]
     pub opcode_mulh_flag: T,
+    #[constraint_ext(selector)]
     pub opcode_mulhsu_flag: T,
+    #[constraint_ext(selector)]
     pub opcode_mulhu_flag: T,
 }
 
