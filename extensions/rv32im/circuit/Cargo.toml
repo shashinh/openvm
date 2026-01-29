@@ -31,8 +31,8 @@ num-integer.workspace = true
 serde = { workspace = true, features = ["derive", "std"] }
 
 # for constraint extraction support:
-openvm-derive = { git = "https://github.com/shashinh/zuzz", package = "openvm-derive" }
-openvm-aux = { git = "https://github.com/shashinh/zuzz", package = "openvm-aux" }
+openvm-derive = { workspace = true }
+openvm-aux = { workspace = true }
 
 [dev-dependencies]
 openvm-stark-sdk = { workspace = true }
