@@ -144,7 +144,7 @@ where
                 + cols.opcode_or_flag * ((AB::Expr::from_canonical_u32(2) * a[i]) - b[i] - c[i])
                 + cols.opcode_and_flag * (b[i] + c[i] - (AB::Expr::from_canonical_u32(2) * a[i]));
             self.bus
-                .send_xor(x, y, x_xor_y)
+            .send_xor(x, y, x_xor_y)
                 .eval(builder, is_valid.clone());
         }
 
@@ -299,7 +299,7 @@ where
 }
 
 #[inline(always)]
-pub(super) fn run_alu<const NUM_LIMBS: usize, const LIMB_BITS: usize>(
+pub fn run_alu<const NUM_LIMBS: usize, const LIMB_BITS: usize>(
     opcode: BaseAluOpcode,
     x: &[u8; NUM_LIMBS],
     y: &[u8; NUM_LIMBS],
